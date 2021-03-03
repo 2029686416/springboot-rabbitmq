@@ -1,5 +1,6 @@
 package com.demon.controller;
 
+import com.demon.exception.BasicException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -31,7 +32,23 @@ public class RbController {
     public void sendMessage2(){
         //
         rabbitTemplate.convertAndSend("test","发送信息2");//此时的routingKey作为queue名//        rabbitTemplate.convertAndSend("logs", "lo", "我是fanout模式！");
-//        rabbitTemplate.convertAndSend("topics", "user.save", "user.save路由消息！");
+        //topics模式
+        rabbitTemplate.convertAndSend("topics", "user.save", "user.save路由消息！");
+        //fanout模式，不需要routingkey,队列绑定交换机就可以发送了
+        rabbitTemplate.convertAndSend("lh_exc","","我是fanout模式");
+
+
+        logger.info("1");
+    }
+
+    /**
+     * 测试异常
+     */
+    @RequestMapping("/exc")
+    public void testExc(){
+        if (2>1){
+            throw new BasicException();
+        }
         logger.info("1");
     }
 
